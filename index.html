@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator | Normal & Scientific</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+  body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0d1b2a,#1b263b);
+  }
+
+  /* ---- TOP RIGHT MUSIC BUTTON ---- */
+  .music-container{
+    position:absolute;
+    top:20px;
+    right:20px;
+  }
+
+  #musicBtn{
+    background:#00d084;
+    color:white;
+    border:none;
+    border-radius:20px;
+    padding:10px 20px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:600;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  /* ---- SIDE SWITCH BUTTON ---- */
+  .side-switch{
+    position:absolute;
+    left:20px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+  }
+
+  .switch-btn{
+    background:#00b4d8;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:15px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .switch-btn:hover{
+    background:#0096c7;
+  }
+
+  /* ---- CALCULATOR ---- */
+  .calculator{
+    background:#1a2f4d;
+    border-radius:25px;
+    padding:25px;
+    width:320px;
+    box-shadow:0 0 25px rgba(0,255,255,.25);
+  }
+
+  .display{
+    height:70px;
+    background:#0e1e35;
+    color:#00ffd0;
+    border-radius:15px;
+    text-align:right;
+    padding:15px;
+    font-size:1.8em;
+    margin-bottom:15px;
+    overflow:auto;
+  }
+
+  .buttons{
+    display:grid;
+    gap:10px;
+  }
+
+  .normal-buttons{grid-template-columns:repeat(4,1fr);}
+  .scientific-buttons{grid-template-columns:repeat(6,1fr);}
+
+  button.calc-btn{
+    height:55px;
+    border:none;
+    border-radius:12px;
+    font-size:1em;
+    color:#e2e8f0;
+    background:#1e3355;
+    box-shadow:4px 4px 8px #0f1a2e,-4px -4px 8px #2a476f;
+    cursor:pointer;
+  }
+
+  button.calc-btn:active{
+    box-shadow:inset 3px 3px 6px #0f1a2e,inset -3px -3px 6px #2a476f;
+  }
+
+  .equal{background:#0aa06e;color:white;font-weight:600;}
+  .clear{color:#ff6b6b;}
+</style>
+</head>
+
+<body>
+
+<!-- ---- MUSIC AUDIO ---- -->
+<audio id="bgMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ---- MUSIC BUTTON TOP-RIGHT ---- -->
+<div class="music-container">
+  <button id="musicBtn" onclick="toggleMusic()">🎵 Play Music</button>
+</div>
+
+<!-- ---- SIDE SWITCH BUTTONS ---- -->
+<div class="side-switch">
+  <button class="switch-btn" id="normalSwitch" onclick="switchToScientific()">Scientific</button>
+  <button class="switch-btn" id="scientificSwitch" onclick="switchToNormal()" style="display:none;">Normal</button>
+</div>
+
+<!-- ---- NORMAL CALCULATOR ---- -->
+<div class="calculator normal-calculator">
+  <div class="display" id="normalDisplay">0</div>
+
+  <div class="buttons normal-buttons">
+    <button class="calc-btn clear" onclick="clearNormal()">C</button>
+    <button class="calc-btn" onclick="insertNormal('/')">÷</button>
+    <button class="calc-btn" onclick="insertNormal('*')">×</button>
+    <button class="calc-btn" onclick="insertNormal('-')">−</button>
+
+    <button class="calc-btn" onclick="insertNormal('7')">7</button>
+    <button class="calc-btn" onclick="insertNormal('8')">8</button>
+    <button class="calc-btn" onclick="insertNormal('9')">9</button>
+    <button class="calc-btn" onclick="insertNormal('+')">+</button>
+
+    <button class="calc-btn" onclick="insertNormal('4')">4</button>
+    <button class="calc-btn" onclick="insertNormal('5')">5</button>
+    <button class="calc-btn" onclick="insertNormal('6')">6</button>
+    <button class="calc-btn equal" onclick="calculateNormal()">=</button>
+
+    <button class="calc-btn" onclick="insertNormal('1')">1</button>
+    <button class="calc-btn" onclick="insertNormal('2')">2</button>
+    <button class="calc-btn" onclick="insertNormal('3')">3</button>
+    <button class="calc-btn" onclick="insertNormal('0')">0</button>
+  </div>
+</div>
+
+<!-- ---- SCIENTIFIC CALCULATOR ---- -->
+<div class="calculator" id="scientificCalc" style="display:none;">
+  <div class="display" id="display">0</div>
+
+  <div class="buttons scientific-buttons">
+    <button class="calc-btn clear" onclick="clearDisplay()">AC</button>
+    <button class="calc-btn" onclick="delChar()">DEL</button>
+    <button class="calc-btn" onclick="insert('(')">(</button>
+    <button class="calc-btn" onclick="insert(')')">)</button>
+    <button class="calc-btn" onclick="insert('π')">π</button>
+    <button class="calc-btn" onclick="insert('e')">e</button>
+
+    <button class="calc-btn" onclick="insert('sin(')">sin</button>
+    <button class="calc-btn" onclick="insert('cos(')">cos</button>
+    <button class="calc-btn" onclick="insert('tan(')">tan</button>
+    <button class="calc-btn" onclick="insert('log(')">log</button>
+    <button class="calc-btn" onclick="insert('ln(')">ln</button>
+    <button class="calc-btn" onclick="insert('√(')">√</button>
+
+    <button class="calc-btn" onclick="insert('7')">7</button>
+    <button class="calc-btn" onclick="insert('8')">8</button>
+    <button class="calc-btn" onclick="insert('9')">9</button>
+    <button class="calc-btn" onclick="insert('/')">÷</button>
+    <button class="calc-btn" onclick="insert('^')">xʸ</button>
+    <button class="calc-btn" onclick="insert('**2')">x²</button>
+
+    <button class="calc-btn" onclick="insert('4')">4</button>
+    <button class="calc-btn" onclick="insert('5')">5</button>
+    <button class="calc-btn" onclick="insert('6')">6</button>
+    <button class="calc-btn" onclick="insert('*')">×</button>
+    <button class="calc-btn" onclick="insert('**3')">x³</button>
+    <button class="calc-btn" onclick="insert('1/')">1/x</button>
+
+    <button class="calc-btn" onclick="insert('1')">1</button>
+    <button class="calc-btn" onclick="insert('2')">2</button>
+    <button class="calc-btn" onclick="insert('3')">3</button>
+    <button class="calc-btn" onclick="insert('-')">−</button>
+    <button class="calc-btn" onclick="insert('%')">%</button>
+    <button class="calc-btn" onclick="insert('!')">n!</button>
+
+    <button class="calc-btn" onclick="insert('0')">0</button>
+    <button class="calc-btn" onclick="insert('.')">.</button>
+    <button class="calc-btn" onclick="insert('+')">+</button>
+
+    <button class="calc-btn equal" style="grid-column:span 3;" onclick="calculate()">=</button>
+    <button class="calc-btn" onclick="useAns()">Ans</button>
+  </div>
+</div>
+
+<script>
+/* NORMAL CALC */
+let normalExpr="";
+function insertNormal(v){normalExpr+=v;document.getElementById("normalDisplay").textContent=normalExpr;}
+function clearNormal(){normalExpr="";document.getElementById("normalDisplay").textContent="0";}
+function calculateNormal(){
+  try{
+    const r=Function('"use strict";return('+normalExpr+')')();
+    normalExpr=String(r);
+    document.getElementById("normalDisplay").textContent=r;
+  }catch{
+    document.getElementById("normalDisplay").textContent="Error";normalExpr="";
+  }
+}
+
+/* SWITCH */
+function switchToScientific(){
+  document.querySelector(".normal-calculator").style.display="none";
+  document.getElementById("scientificCalc").style.display="block";
+  document.getElementById("normalSwitch").style.display="none";
+  document.getElementById("scientificSwitch").style.display="block";
+}
+
+function switchToNormal(){
+  document.getElementById("scientificCalc").style.display="none";
+  document.querySelector(".normal-calculator").style.display="block";
+  document.getElementById("normalSwitch").style.display="block";
+  document.getElementById("scientificSwitch").style.display="none";
+}
+
+/* MUSIC */
+const music=document.getElementById("bgMusic");
+let musicPlaying=false;
+
+function toggleMusic(){
+  if(music.paused){
+    music.play();
+    musicPlaying=true;
+    document.getElementById("musicBtn").textContent="⏸️ Pause Music";
+  }else{
+    music.pause();
+    musicPlaying=false;
+    document.getElementById("musicBtn").textContent="🎵 Play Music";
+  }
+}
+
+/* SCIENTIFIC */
+let expr=""; let lastAns=0;
+function updateDisplay(){document.getElementById("display").textContent=expr||"0";}
+function insert(v){expr+=v;updateDisplay();}
+function clearDisplay(){expr="";updateDisplay();}
+function delChar(){expr=expr.slice(0,-1);updateDisplay();}
+function factorial(n){if(n<0)return NaN;if(n===0)return 1;return n*factorial(n-1);}
+function preprocess(input){
+  input=input.replace(/sin\(([^)]+)\)/g,(_,x)=>`Math.sin((${x})*Math.PI/180)`);
+  input=input.replace(/cos\(([^)]+)\)/g,(_,x)=>`Math.cos((${x})*Math.PI/180)`);
+  input=input.replace(/tan\(([^)]+)\)/g,(_,x)=>`Math.tan((${x})*Math.PI/180)`);
+  input=input.replace(/\blog\(/g,"Math.log10(");
+  input=input.replace(/\bln\(/g,"Math.log(");
+  input=input.replace(/√\(/g,"Math.sqrt(");
+  input=input.replace(/\bπ\b/g,"Math.PI");
+  input=input.replace(/\be\b/g,"Math.E");
+  input=input.replace(/\^/g,"**");
+  input=input.replace(/(\d+|\([^\)]+\))!/g,(_,n)=>`factorial(${n})`);
+  input=input.replace(/(\d+)%/g,"($1/100)");
+  return input;
+}
+function calculate(){
+  try{
+    let f=preprocess(expr);
+    let r=Function('"use strict";return('+f+')')();
+    expr=String(r); lastAns=r; updateDisplay();
+  }catch{
+    document.getElementById("display").textContent="Error"; expr="";
+  }
+}
+function useAns(){expr+=lastAns;updateDisplay();}
+
+</script>
+</body>
+</html>
